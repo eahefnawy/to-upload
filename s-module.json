@@ -6,8 +6,42 @@
   "author": "",
   "description": "",
   "cloudFormation": {
-    "lambdaIamPolicyDocumentStatements": [],
+    "lambdaIamPolicyDocumentStatements": [
+       {
+         "Effect": "Allow",
+         "Action": [ "*" ],
+         "Resource": {
+           "Fn::Join": [
+             ":",
+             [ "arn:aws:dynamodb", { "Ref": "AWS::Region" }, "*", "table/jaws-users" ]
+           ]
+         }
+       }
+    ],
     "apiGatewayIamPolicyDocumentStatements": [],
-    "resources": {}
+    "resources": {
+        "DynamoDB": {
+          "Type" : "AWS::DynamoDB::Table",
+          "Properties": {
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "email",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema" : [
+              {
+                "AttributeName": "email",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits":  { "Ref" : "aaDefaultDynamoRWThroughput" },
+              "WriteCapacityUnits": { "Ref" : "aaDefaultDynamoRWThroughput" }
+            },
+            "TableName": "jaws-users"
+        }
+      }
+    }
   }
 }
